@@ -2,29 +2,38 @@ import judging
 import mapping
 import utils
 
-t = 0.25
-T = 0.2
+# deciding whether the action has begun
+t = 0.1
+# threshold for judging whether the action is valid
+T = 0.15
 sample = None
+
 
 def counting(video):
     r = 0
     f = []
-    flag = False
+    flag = [False, -1]
+    # TODO:make sure openpose python works
     skeleton_data = utils.skeleton_extraction(video)
-    for index, item in skeleton_data:
+    for item in skeleton_data:
+        # TODO:map result including frame number info
         y = mapping.test_mapping(item)
-        y.append(index)
-        deviation = abs(y[0])
-        if flag is False and deviation >= t:
-            flag = True
-            f.append(y)
-        elif flag is True and deviation >= t:
-            f.append(y)
-        elif flag is True and deviation < t:
-            flag = False
-            if judging.test_judging(f, judging.sin) >= T:
-                r += 1
-            f = []
+        if y is not -1:
+            deviation = abs(y[1])
+            if flag[0] is False and deviation < t:
+                flag[1] = y[0]
+            elif flag[0] is False and deviation >= t:
+                flag[0] = True
+                f.append(y)
+            elif flag is True and deviation >= t:
+                f.append(y)
+            elif flag is True and deviation < t:
+                f.append(y)
+                # using a simple 1D average error judging
+                if judging.ave_error_judging1d(flag[1], f, judging.sin) >= T:
+                    r += 1
+                f = []
+                flag = [False, -1]
     print(r)
 
 

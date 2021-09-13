@@ -5,11 +5,12 @@ import waveform
 sin = waveform.basic_sine
 
 
-def test_judging(sample, template):
+def ave_error_judging1d(start, sample, template):
     error = 0
     n = len(sample)
+    p = sample[-1][0] - start
     for item in sample:
-        basic = template(item[1])
-        error += abs(item[0]-basic)
+        basic = template((item[0] - start) / p)
+        error += abs(item[1] - basic)
     error = error / n
     return error
