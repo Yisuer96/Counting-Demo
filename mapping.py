@@ -1,6 +1,7 @@
 # Mapping a skeleton data to a process value(2-D)
-#Confidence threshold of skeleton point
+# Confidence threshold of skeleton point
 C = 0.6
+
 
 # def test_mapping(skeleton):
 #     error = 0
@@ -12,13 +13,13 @@ C = 0.6
 #     return error
 
 def confident_point(point):
-    if point[2]>C:
+    if point[2] > C:
         return True
     return False
 
-def headcenter(skeleton):
-    head = [skeleton[0],skeleton[15],skeleton[16],skeleton[17],skeleton[18]]
 
+def headcenter(skeleton):
+    head = [skeleton[0], skeleton[15], skeleton[16], skeleton[17], skeleton[18]]
 
 
 def push_up_mapping(skeleton):
