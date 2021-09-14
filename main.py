@@ -39,5 +39,3 @@ def counting(video):
 
 if __name__ == '__main__':
     counting(sample)
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
