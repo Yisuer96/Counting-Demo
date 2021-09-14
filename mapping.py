@@ -3,6 +3,7 @@
 # Confidence threshold of skeleton point
 # C = 0.6
 import waveform
+import math
 
 test_skeleton = [[0, 0, 0], [197.164, 161.491, 0.896455], [237.798, 158.156, 0.840285], [259.772, 124.262, 0.871383],
                  [253.03, 68.2592, 0.912764], [159.813, 161.534, 0.834573], [141.215, 125.88, 0.902222],
@@ -39,24 +40,47 @@ def midpoint(points):
     return [x, y]
 
 
+def point_distance(a, b):
+    return math.sqrt(math.pow(a[0] - b[0], 2) + math.pow(a[1] - b[1], 2))
+
+
 # def head_center(skeleton):
 #     if skeleton[0][3] >= 0.8:
 #         return skeleton[0][:2]
 #     elif skeleton[15][3] >= 0.6 and skeleton[16][3] >= 0.6:
-#         return midpoint(skeleton[15], skeleton[16])
+#         return midpoint([skeleton[15], skeleton[16]])
 #     elif skeleton[17][3] >= 0.6 and skeleton[18][3] >= 0.6:
-#         return midpoint(skeleton[17], skeleton[18])
+#         return midpoint([skeleton[17], skeleton[18]])
 #     else:
 #         return -1
 
 
 # simplest version mappings
 def push_up_mapping(skeleton):
-    return 0
+    if True:
+        heel = midpoint([skeleton[21], skeleton[24]])
+        h = heel[1] - skeleton[1][1]
+        l = point_distance(heel, skeleton[1])
+        i = h / l
+        if i <= 0:
+            return 0
+        elif i >= 0.35:
+            return 1
+        else:
+            return i / 0.35
+    return -1
 
 
 def sit_up_mapping(skeleton):
-    return 0
+    h = skeleton[8][1] - skeleton[1][1]
+    l = point_distance(skeleton[8], skeleton[1])
+    i = h / l
+    if i <= 0:
+        return 0
+    elif i >= 0.9:
+        return 1
+    else:
+        return i
 
 
 def pull_up_mapping(skeleton):

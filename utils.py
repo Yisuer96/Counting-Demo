@@ -1,8 +1,7 @@
-import math
 import random
-import sys
 import numpy as np
 import matplotlib.pyplot as plt
+
 
 # open_path = "../openpose/build/python"
 
@@ -35,10 +34,6 @@ def reformat_skeleton(skeleton):
                 t = []
         return r
     return -1
-
-
-def point_distance(a, b):
-    return math.sqrt(math.pow(a[0] - b[0], 2) + math.pow(a[1] - b[1], 2))
 
 
 # TODO: 返回[[x,y,c],[x,y,c],...]25个数组
