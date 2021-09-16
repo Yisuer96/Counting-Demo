@@ -34,49 +34,7 @@ try:
             'Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in CMake and have this Python script in the right folder?')
         raise e
 
-    # Flags
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--image_path", default="./openpose/media/COCO_val2014_000000000192.jpg",
-                        help="Process an image. Read all standard formats (jpg, png, bmp, etc.).")
-    args = parser.parse_known_args()
 
-    # Custom Params (refer to include/openpose/flags.hpp for more parameters)
-    params = dict()
-    params["model_folder"] = "./openpose/models/"
-
-    # Add others in path?
-    for i in range(0, len(args[1])):
-        curr_item = args[1][i]
-        if i != len(args[1]) - 1:
-            next_item = args[1][i + 1]
-        else:
-            next_item = "1"
-        if "--" in curr_item and "--" in next_item:
-            key = curr_item.replace('-', '')
-            if key not in params:  params[key] = "1"
-        elif "--" in curr_item and "--" not in next_item:
-            key = curr_item.replace('-', '')
-            if key not in params: params[key] = next_item
-
-    # Construct it from system arguments
-    # op.init_argv(args[1])
-    # oppython = op.OpenposePython()
-
-    # Starting OpenPose
-    opWrapper = op.WrapperPython()
-    opWrapper.configure(params)
-    opWrapper.start()
-
-    # Process Image
-    datum = op.Datum()
-    imageToProcess = cv2.imread(args[0].image_path)
-    datum.cvInputData = imageToProcess
-    opWrapper.emplaceAndPop([datum])
-
-    # Display Image
-    print("Body keypoints: \n" + str(datum.poseKeypoints))
-    cv2.imshow("OpenPose 1.6.0 - Tutorial Python API", datum.cvOutputData)
-    cv2.waitKey(0)
 except Exception as e:
     print(e)
     sys.exit(-1)
@@ -98,9 +56,60 @@ def reformat_skeleton(skeleton):
 # TODO: 返回视频每一帧的skeleton（reformat to [[x,y,c],[x,y,c],...]）的数组，整体格式：[[frame_num,skeleton],[frame_num,skeleton],
 #  [frame_num,skeleton],...]
 def skeleton_extraction(video_path):
+    frame = 5
     r = []
+    for f_num in range(frame):
+        # Flags
+        parser = argparse.ArgumentParser()
+        parser.add_argument("--image_path", default="./openpose/media/COCO_val2014_000000000192.jpg",
+                            help="Process an image. Read all standard formats (jpg, png, bmp, etc.).")
+        args = parser.parse_known_args()
+
+        # Custom Params (refer to include/openpose/flags.hpp for more parameters)
+        params = dict()
+        params["model_folder"] = "./openpose/models/"
+
+        # Add others in path?
+        for i in range(0, len(args[1])):
+            curr_item = args[1][i]
+            if i != len(args[1]) - 1:
+                next_item = args[1][i + 1]
+            else:
+                next_item = "1"
+            if "--" in curr_item and "--" in next_item:
+                key = curr_item.replace('-', '')
+                if key not in params:  params[key] = "1"
+            elif "--" in curr_item and "--" not in next_item:
+                key = curr_item.replace('-', '')
+                if key not in params: params[key] = next_item
+
+        # Construct it from system arguments
+        # op.init_argv(args[1])
+        # oppython = op.OpenposePython()
+
+        # Starting OpenPose
+        opWrapper = op.WrapperPython()
+        opWrapper.configure(params)
+        opWrapper.start()
+
+        # Process Image
+        datum = op.Datum()
+        imageToProcess = cv2.imread(args[0].image_path)
+        datum.cvInputData = imageToProcess
+        opWrapper.emplaceAndPop([datum])
+
+        # Display Image
+        # print("Body keypoints: \n" + str(datum.poseKeypoints))
+        # cv2.imshow("OpenPose 1.6.0 - Tutorial Python API", datum.cvOutputData)
+        # cv2.waitKey(0)
+
+        # change output format
+        skt = datum.poseKeypoints[0].tolist()
+        r.append([f_num, skt])
+    print(r)
     return r
 
+skeleton_extraction('1')
 
 # mat_plot poly_fitting
 def simple_fitting(points):
