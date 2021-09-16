@@ -2,7 +2,6 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 # From Python
 # It requires OpenCV installed for Python
 import sys
@@ -21,7 +20,8 @@ try:
             sys.path.append(dir_path + '/openpose/Release')
             # sys.path.append(dir_path + '/../../python/openpose/Release');
             # os.environ['PATH']  = os.environ['PATH'] + ';' + dir_path + '/../../x64/Release;' +  dir_path + '/../../bin;'
-            os.environ['PATH'] = os.environ['PATH'] + ';' + dir_path + '/openpose/x64/Release;' + dir_path + '/openpose/bin;'
+            os.environ['PATH'] = os.environ[
+                                     'PATH'] + ';' + dir_path + '/openpose/x64/Release;' + dir_path + '/openpose/bin;'
             import pyopenpose as op
         else:
             # Change these variables to point to the correct folder (Release/x64 etc.)
@@ -30,12 +30,14 @@ try:
             # sys.path.append('/usr/local/python')
             from openpose import pyopenpose as op
     except ImportError as e:
-        print('Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in CMake and have this Python script in the right folder?')
+        print(
+            'Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in CMake and have this Python script in the right folder?')
         raise e
 
     # Flags
     parser = argparse.ArgumentParser()
-    parser.add_argument("--image_path", default="./openpose/media/COCO_val2014_000000000192.jpg", help="Process an image. Read all standard formats (jpg, png, bmp, etc.).")
+    parser.add_argument("--image_path", default="./openpose/media/COCO_val2014_000000000192.jpg",
+                        help="Process an image. Read all standard formats (jpg, png, bmp, etc.).")
     args = parser.parse_known_args()
 
     # Custom Params (refer to include/openpose/flags.hpp for more parameters)
@@ -45,13 +47,15 @@ try:
     # Add others in path?
     for i in range(0, len(args[1])):
         curr_item = args[1][i]
-        if i != len(args[1])-1: next_item = args[1][i+1]
-        else: next_item = "1"
+        if i != len(args[1]) - 1:
+            next_item = args[1][i + 1]
+        else:
+            next_item = "1"
         if "--" in curr_item and "--" in next_item:
-            key = curr_item.replace('-','')
+            key = curr_item.replace('-', '')
             if key not in params:  params[key] = "1"
         elif "--" in curr_item and "--" not in next_item:
-            key = curr_item.replace('-','')
+            key = curr_item.replace('-', '')
             if key not in params: params[key] = next_item
 
     # Construct it from system arguments
@@ -78,7 +82,6 @@ except Exception as e:
     sys.exit(-1)
 
 
-
 def reformat_skeleton(skeleton):
     r = []
     t = []
@@ -92,11 +95,10 @@ def reformat_skeleton(skeleton):
     return -1
 
 
-# TODO: 返回[[x,y,c],[x,y,c],...]25个数组
-def skeleton_extraction(video):
+# TODO: 返回视频每一帧的skeleton（reformat to [[x,y,c],[x,y,c],...]）的数组，整体格式：[[frame_num,skeleton],[frame_num,skeleton],
+#  [frame_num,skeleton],...]
+def skeleton_extraction(video_path):
     r = []
-    for i in range(25):
-        r.append([i, i, random.random()])
     return r
 
 
