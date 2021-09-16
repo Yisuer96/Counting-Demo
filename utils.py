@@ -134,3 +134,11 @@ def simple_fitting(points):
         plt.legend(loc=4)  # 指定legend的位置右下角
         plt.title('poly_fitting')
         plt.show()
+
+
+def frame_regularization(points):
+    start = points[0][0]
+    ratio = points[-1][0] - start
+    for point in points:
+        point[0] = (point[0] - start) / ratio
+    return points

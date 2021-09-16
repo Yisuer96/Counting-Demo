@@ -7,6 +7,7 @@ t = 0.1
 # threshold for judging whether the action is valid
 T = 0.15
 sample = None
+mapper = mapping.pull_up_mapping
 
 
 def counting(video):
@@ -17,7 +18,7 @@ def counting(video):
     skeleton_data = utils.skeleton_extraction(video)
     for item in skeleton_data:
         # TODO:map result including frame number info
-        y = mapping.test_mapping(item)
+        y = mapper(item)
         if y is not -1:
             deviation = abs(y[1])
             if flag[0] is False and deviation < t:
