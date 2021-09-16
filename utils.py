@@ -106,10 +106,8 @@ def skeleton_extraction(video_path):
         # change output format
         skt = datum.poseKeypoints[0].tolist()
         r.append([f_num, skt])
-    print(r)
+    # print(r)
     return r
-
-skeleton_extraction('1')
 
 # mat_plot poly_fitting
 def simple_fitting(points):
