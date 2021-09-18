@@ -17,14 +17,15 @@ try:
         if platform == "win32":
             # Change these variables to point to the correct folder (Release/x64 etc.)
             sys.path.append(dir_path + '/openpose/Release')
-            # sys.path.append(dir_path + '/../../python/openpose/Release'); os.environ['PATH']  = os.environ['PATH']
-            # + ';' + dir_path + '/../../x64/Release;' +  dir_path + '/../../bin;'
+            # sys.path.append(dir_path + '/../../python/openpose/Release')
+            # os.environ['PATH']  = os.environ['PATH']+ ';' + dir_path +
+            # '/../../x64/Release;' +  dir_path + '/../../bin;'
             os.environ['PATH'] = os.environ[
-                                     'PATH'] + ';' + dir_path + '/openpose/x64/Release;' + dir_path + '/openpose/bin;'
+                                     'PATH'] + ';' + dir_path + '/openpose/x64/Release;' + dir_path + '/openpose/bin; '
             import pyopenpose as op
         else:
             # Change these variables to point to the correct folder (Release/x64 etc.)
-            sys.path.append('../../python');
+            sys.path.append('../../python')
             # If you run `make install` (default path is `/usr/local/python` for Ubuntu), you can also access the
             # OpenPose/python module from there. This will install OpenPose and the python library at your desired
             # installation path. Ensure that this is in your python path in order to use it. sys.path.append(
@@ -90,15 +91,15 @@ def skeleton_extraction(video_path):
         # oppython = op.OpenposePython()
 
         # Starting OpenPose
-        opWrapper = op.WrapperPython()
-        opWrapper.configure(params)
-        opWrapper.start()
+        op_wrapper = op.WrapperPython()
+        op_wrapper.configure(params)
+        op_wrapper.start()
 
         # Process Image
         datum = op.Datum()
-        imageToProcess = cv2.imread(args[0].image_path)
-        datum.cvInputData = imageToProcess
-        opWrapper.emplaceAndPop([datum])
+        image_to_process = cv2.imread(args[0].image_path)
+        datum.cvInputData = image_to_process
+        op_wrapper.emplaceAndPop([datum])
 
         # Display Image
         # print("Body keypoints: \n" + str(datum.poseKeypoints))
@@ -126,7 +127,7 @@ def simple_fitting(points):
         p1 = np.poly1d(f1)
         print('p1 is :\n', p1)
         y_val = p1(x)  # 拟合y值
-        print('yvals is :\n', y_val)
+        print('y_val is :\n', y_val)
         # 绘图
         plot1 = plt.plot(x, y, 's', label='original values')
         plot2 = plt.plot(x, y_val, 'r', label='poly_fit values')
