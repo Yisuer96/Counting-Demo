@@ -1,9 +1,8 @@
-import random
+import shutil
+
 import numpy as np
 import matplotlib.pyplot as plt
-
-# From Python
-# It requires OpenCV installed for Python
+from PIL import Image, ImageSequence
 import sys
 import cv2
 import os
@@ -18,20 +17,23 @@ try:
         if platform == "win32":
             # Change these variables to point to the correct folder (Release/x64 etc.)
             sys.path.append(dir_path + '/openpose/Release')
-            # sys.path.append(dir_path + '/../../python/openpose/Release');
-            # os.environ['PATH']  = os.environ['PATH'] + ';' + dir_path + '/../../x64/Release;' +  dir_path + '/../../bin;'
+            # sys.path.append(dir_path + '/../../python/openpose/Release'); os.environ['PATH']  = os.environ['PATH']
+            # + ';' + dir_path + '/../../x64/Release;' +  dir_path + '/../../bin;'
             os.environ['PATH'] = os.environ[
                                      'PATH'] + ';' + dir_path + '/openpose/x64/Release;' + dir_path + '/openpose/bin;'
             import pyopenpose as op
         else:
             # Change these variables to point to the correct folder (Release/x64 etc.)
             sys.path.append('../../python');
-            # If you run `make install` (default path is `/usr/local/python` for Ubuntu), you can also access the OpenPose/python module from there. This will install OpenPose and the python library at your desired installation path. Ensure that this is in your python path in order to use it.
-            # sys.path.append('/usr/local/python')
+            # If you run `make install` (default path is `/usr/local/python` for Ubuntu), you can also access the
+            # OpenPose/python module from there. This will install OpenPose and the python library at your desired
+            # installation path. Ensure that this is in your python path in order to use it. sys.path.append(
+            # '/usr/local/python')
             from openpose import pyopenpose as op
     except ImportError as e:
         print(
-            'Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in CMake and have this Python script in the right folder?')
+            'Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in CMake and have this Python '
+            'script in the right folder?')
         raise e
 
 
@@ -109,6 +111,7 @@ def skeleton_extraction(video_path):
     # print(r)
     return r
 
+
 # mat_plot poly_fitting
 def simple_fitting(points):
     if len(points) > 0:
@@ -140,3 +143,18 @@ def frame_regularization(points):
     for point in points:
         point[0] = (point[0] - start) / ratio
     return points
+
+
+def parse_gif(gif_path):
+    im = Image.open(gif_path)
+    frames = ImageSequence.Iterator(im)
+    file_name = gif_path.split(".")[0]
+    index = 1
+    pic_dir = "{0}".format(file_name)
+    if os.path.isdir(pic_dir):
+        shutil.rmtree(pic_dir)
+    os.makedirs(pic_dir)
+    for frame in frames:
+        print("image %d: mode %s, size %s" % (index, frame.mode, frame.size))
+        frame.save("%s/frame%d.png" % (file_name, index))
+        index += 1
