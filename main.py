@@ -15,6 +15,8 @@ for save_dir in ["./output_images", "./output_jsons"]:
     if os.path.exists(save_dir):
         shutil.rmtree(save_dir)
         os.mkdir(save_dir)
+    else:
+        os.mkdir(save_dir)
 
 
 def counting(video):
