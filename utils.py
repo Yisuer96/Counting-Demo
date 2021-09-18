@@ -17,24 +17,20 @@ try:
         if platform == "win32":
             # Change these variables to point to the correct folder (Release/x64 etc.)
             sys.path.append(dir_path + '/openpose/Release')
-            # sys.path.append(dir_path + '/../../python/openpose/Release')
-            # os.environ['PATH']  = os.environ['PATH']+ ';' + dir_path +
-            # '/../../x64/Release;' +  dir_path + '/../../bin;'
+            # sys.path.append(dir_path + '/../../python/openpose/Release');
+            # os.environ['PATH']  = os.environ['PATH'] + ';' + dir_path + '/../../x64/Release;' +  dir_path + '/../../bin;'
             os.environ['PATH'] = os.environ[
-                                     'PATH'] + ';' + dir_path + '/openpose/x64/Release;' + dir_path + '/openpose/bin; '
+                                     'PATH'] + ';' + dir_path + '/openpose/x64/Release;' + dir_path + '/openpose/bin;'
             import pyopenpose as op
         else:
             # Change these variables to point to the correct folder (Release/x64 etc.)
-            sys.path.append('../../python')
-            # If you run `make install` (default path is `/usr/local/python` for Ubuntu), you can also access the
-            # OpenPose/python module from there. This will install OpenPose and the python library at your desired
-            # installation path. Ensure that this is in your python path in order to use it. sys.path.append(
-            # '/usr/local/python')
+            sys.path.append('../../python');
+            # If you run `make install` (default path is `/usr/local/python` for Ubuntu), you can also access the OpenPose/python module from there. This will install OpenPose and the python library at your desired installation path. Ensure that this is in your python path in order to use it.
+            # sys.path.append('/usr/local/python')
             from openpose import pyopenpose as op
     except ImportError as e:
         print(
-            'Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in CMake and have this Python '
-            'script in the right folder?')
+            'Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in CMake and have this Python script in the right folder?')
         raise e
 
 
@@ -59,47 +55,52 @@ def reformat_skeleton(skeleton):
 # TODO: 返回视频每一帧的skeleton（reformat to [[x,y,c],[x,y,c],...]）的数组，整体格式：[[frame_num,skeleton],[frame_num,skeleton],
 #  [frame_num,skeleton],...]
 def skeleton_extraction(video_path):
-    frame = 5
+    # test_path
+    video_path = "./openpose/media/"
+
     r = []
-    for f_num in range(frame):
-        # Flags
-        parser = argparse.ArgumentParser()
-        parser.add_argument("--image_path", default="./openpose/media/COCO_val2014_000000000192.jpg",
-                            help="Process an image. Read all standard formats (jpg, png, bmp, etc.).")
-        args = parser.parse_known_args()
+    # Flags
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--image_dir", default=video_path,
+                        help="Process an image. Read all standard formats (jpg, png, bmp, etc.).")
+    args = parser.parse_known_args()
 
-        # Custom Params (refer to include/openpose/flags.hpp for more parameters)
-        params = dict()
-        params["model_folder"] = "./openpose/models/"
+    # Custom Params (refer to include/openpose/flags.hpp for more parameters)
+    params = dict()
+    params["model_folder"] = "./openpose/models/"
 
-        # Add others in path?
-        for i in range(0, len(args[1])):
-            curr_item = args[1][i]
-            if i != len(args[1]) - 1:
-                next_item = args[1][i + 1]
-            else:
-                next_item = "1"
-            if "--" in curr_item and "--" in next_item:
-                key = curr_item.replace('-', '')
-                if key not in params:  params[key] = "1"
-            elif "--" in curr_item and "--" not in next_item:
-                key = curr_item.replace('-', '')
-                if key not in params: params[key] = next_item
+    # Add others in path?
+    for i in range(0, len(args[1])):
+        curr_item = args[1][i]
+        if i != len(args[1]) - 1:
+            next_item = args[1][i + 1]
+        else:
+            next_item = "1"
+        if "--" in curr_item and "--" in next_item:
+            key = curr_item.replace('-', '')
+            if key not in params:  params[key] = "1"
+        elif "--" in curr_item and "--" not in next_item:
+            key = curr_item.replace('-', '')
+            if key not in params: params[key] = next_item
 
-        # Construct it from system arguments
-        # op.init_argv(args[1])
-        # oppython = op.OpenposePython()
+    # Construct it from system arguments
+    # op.init_argv(args[1])
+    # oppython = op.OpenposePython()
 
-        # Starting OpenPose
-        op_wrapper = op.WrapperPython()
-        op_wrapper.configure(params)
-        op_wrapper.start()
+    # Starting OpenPose
+    opWrapper = op.WrapperPython()
+    opWrapper.configure(params)
+    opWrapper.start()
 
+    # Read frames on directory
+    imagePaths = op.get_images_on_directory(args[0].image_dir)
+
+    for f_num, imagePath in enumerate(imagePaths):
         # Process Image
         datum = op.Datum()
-        image_to_process = cv2.imread(args[0].image_path)
-        datum.cvInputData = image_to_process
-        op_wrapper.emplaceAndPop([datum])
+        imageToProcess = cv2.imread(imagePath)
+        datum.cvInputData = imageToProcess
+        opWrapper.emplaceAndPop([datum])
 
         # Display Image
         # print("Body keypoints: \n" + str(datum.poseKeypoints))
@@ -111,7 +112,6 @@ def skeleton_extraction(video_path):
         r.append([f_num, skt])
     # print(r)
     return r
-
 
 # mat_plot poly_fitting
 def simple_fitting(points):
