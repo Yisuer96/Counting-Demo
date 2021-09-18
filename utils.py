@@ -57,12 +57,12 @@ def reformat_skeleton(skeleton):
 def skeleton_extraction(video_path):
     # test_path
     video_path = "./openpose/media/"
-
     r = []
     # Flags
     parser = argparse.ArgumentParser()
     parser.add_argument("--image_dir", default=video_path,
                         help="Process an image. Read all standard formats (jpg, png, bmp, etc.).")
+
     args = parser.parse_known_args()
 
     # Custom Params (refer to include/openpose/flags.hpp for more parameters)
@@ -105,6 +105,7 @@ def skeleton_extraction(video_path):
         # Display Image
         # print("Body keypoints: \n" + str(datum.poseKeypoints))
         # cv2.imshow("OpenPose 1.6.0 - Tutorial Python API", datum.cvOutputData)
+        cv2.imwrite(f"./output_images/{f_num}.jpg", datum.cvOutputData)
         # cv2.waitKey(0)
 
         # change output format
@@ -159,3 +160,4 @@ def parse_gif(gif_path):
         print("image %d: mode %s, size %s" % (index, frame.mode, frame.size))
         frame.save("%s/frame%d.png" % (file_name, index))
         index += 1
+

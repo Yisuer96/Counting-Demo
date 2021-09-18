@@ -1,6 +1,8 @@
+import os
 import judging
 import mapping
 import utils
+import shutil
 
 # deciding whether the action has begun
 t = 0.1
@@ -8,6 +10,11 @@ t = 0.1
 T = 0.15
 sample = None
 mapper = mapping.pull_up_mapping
+
+for save_dir in ["./output_images", "./output_jsons"]:
+    if os.path.exists(save_dir):
+        shutil.rmtree(save_dir)
+        os.mkdir(save_dir)
 
 
 def counting(video):
