@@ -54,9 +54,8 @@ def reformat_skeleton(skeleton):
 
 # TODO: 返回视频每一帧的skeleton（reformat to [[x,y,c],[x,y,c],...]）的数组，整体格式：[[frame_num,skeleton],[frame_num,skeleton],
 #  [frame_num,skeleton],...]
-def skeleton_extraction(video_path):
+def skeleton_extraction(video_path="./openpose/media/"):
     # test_path
-    video_path = "./openpose/media/"
     r = []
     # Flags
     parser = argparse.ArgumentParser()
@@ -114,6 +113,7 @@ def skeleton_extraction(video_path):
     # print(r)
     return r
 
+
 # mat_plot poly_fitting
 def simple_fitting(points):
     if len(points) > 0:
@@ -160,4 +160,5 @@ def parse_gif(gif_path):
         print("image %d: mode %s, size %s" % (index, frame.mode, frame.size))
         frame.save("%s/frame%d.png" % (file_name, index))
         index += 1
+
 

@@ -58,18 +58,21 @@ def point_distance(a, b):
 
 # simplest version mappings
 def push_up_mapping(skeleton):
-    if True:
-        heel = midpoint([skeleton[1][21], skeleton[1][24]])
-        h = heel[1] - skeleton[1][1][1]
-        k = point_distance(heel, skeleton[1][1])
-        i = h / k
-        if i <= 0:
-            return [skeleton[0], 0]
-        elif i >= 0.35:
-            return [skeleton[0], 1]
-        else:
-            return [skeleton[0], i / 0.35]
-    return -1
+    if skeleton[1][8][2] >= 0.15:
+        fulcrum = skeleton[1][8]
+    elif skeleton[1][21][2] >= 0.2 and skeleton[1][24][2] >= 0.2:
+        fulcrum = midpoint([skeleton[1][21], skeleton[1][24]])
+    else:
+        return [skeleton[0], -1]
+    h = abs(fulcrum[1] - skeleton[1][1][1])
+    k = point_distance(fulcrum, skeleton[1][1])
+    i = h / k
+    if i >= 0.25:
+        return [skeleton[0], 0]
+    elif i <= 0.08:
+        return [skeleton[0], 1]
+    else:
+        return [skeleton[0], 1 - i / 0.3]
 
 
 def sit_up_mapping(skeleton):
@@ -102,4 +105,3 @@ def pull_up_mapping(skeleton):
     return -1
 
 
-pull_up_mapping(test_skeleton)
