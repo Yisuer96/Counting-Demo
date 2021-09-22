@@ -67,12 +67,12 @@ def push_up_mapping(skeleton):
     h = abs(fulcrum[1] - skeleton[1][1][1])
     k = point_distance(fulcrum, skeleton[1][1])
     i = h / k
-    if i >= 0.3:
+    if i >= 0.25:
         return [skeleton[0], 0]
     elif i <= 0.05:
         return [skeleton[0], 1]
     else:
-        return [skeleton[0], 1 - i / 0.3]
+        return [skeleton[0], 1 - i / 0.25]
 
 
 def sit_up_mapping(skeleton):

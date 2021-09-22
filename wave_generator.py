@@ -32,6 +32,7 @@ def generate(videos):
                     elif flag[0] is True and deviation < t:
                         f.append([y[0], 0])
                         p += utils.frame_regularization(f)
+                        print(p)
                         f = []
                         flag = [False, -1]
                 elif flag[0] is True:
