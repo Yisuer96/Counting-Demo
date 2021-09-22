@@ -36,9 +36,8 @@ def generate(videos):
                         flag = [False, -1]
                 elif flag[0] is True:
                     f.append([y[0], f[-1][1]])
-            utils.simple_fitting(p)
-
-    # utils.simple_fitting(p)
+            # utils.simple_fitting(p, 4)
+    utils.simple_fitting(p, 6)
 
 
 if __name__ == '__main__':

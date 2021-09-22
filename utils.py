@@ -115,7 +115,7 @@ def skeleton_extraction(video_path="./openpose/media/"):
 
 
 # mat_plot poly_fitting
-def simple_fitting(points):
+def simple_fitting(points,degree):
     if len(points) > 0:
         x = []
         y = []
@@ -124,7 +124,7 @@ def simple_fitting(points):
             y.append(item[1])
         x = np.array(x)
         y = np.array(y)
-        f1 = np.polyfit(x, y, 3)
+        f1 = np.polyfit(x, y, degree)
         p1 = np.poly1d(f1)
         print('p1 is :\n', p1)
         y_val = p1(x)  # 拟合y值
