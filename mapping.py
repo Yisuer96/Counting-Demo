@@ -63,15 +63,19 @@ def push_up_mapping(skeleton):
     elif skeleton[1][21][2] >= 0.2 and skeleton[1][24][2] >= 0.2:
         fulcrum = midpoint([skeleton[1][21], skeleton[1][24]])
     else:
+        print([skeleton[0], -1])
         return [skeleton[0], -1]
     h = abs(fulcrum[1] - skeleton[1][1][1])
     k = point_distance(fulcrum, skeleton[1][1])
     i = h / k
     if i >= 0.25:
+        print([skeleton[0], 0])
         return [skeleton[0], 0]
     elif i <= 0.05:
+        print([skeleton[0], 1])
         return [skeleton[0], 1]
     else:
+        print([skeleton[0], 1 - i / 0.25])
         return [skeleton[0], 1 - i / 0.25]
 
 

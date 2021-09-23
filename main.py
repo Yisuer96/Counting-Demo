@@ -5,10 +5,12 @@ import utils
 import shutil
 
 # deciding whether the action has begun
+import waveform
+
 t = 0.1
 # threshold for judging whether the action is valid
-T = 0.15
-sample = "temp/1"
+T = 0.25
+sample = "temp/2"
 mapper = mapping.push_up_mapping
 
 for save_dir in ["./output_images", "./output_jsons"]:
@@ -35,13 +37,13 @@ def counting(video):
                 flag[0] = True
                 f.append([flag[1], 0])
                 f.append(y)
-            elif flag is True and deviation >= t:
+            elif flag[0] is True and deviation >= t:
                 f.append(y)
-            elif flag is True and deviation < t:
+            elif flag[0] is True and deviation < t:
                 f.append([y[0], 0])
                 f = utils.frame_regularization(f)
                 # using a simple 1D average error judging
-                if judging.ave_error_judging1d(f, mapper) >= T:
+                if judging.ave_error_judging1d(f, waveform.push_up_poly) <= T:
                     r += 1
                 f = []
                 flag = [False, -1]

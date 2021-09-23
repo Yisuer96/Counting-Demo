@@ -31,13 +31,15 @@ def generate(videos):
                         f.append(y)
                     elif flag[0] is True and deviation < t:
                         f.append([y[0], 0])
+                        print(f)
                         p += utils.frame_regularization(f)
-                        print(p)
                         f = []
                         flag = [False, -1]
                 elif flag[0] is True:
                     f.append([y[0], f[-1][1]])
-            # utils.simple_fitting(p, 4)
+            if flag[0] is True:
+                print(f)
+                p += utils.frame_regularization(f)
     utils.simple_fitting(p, 6)
 
 
