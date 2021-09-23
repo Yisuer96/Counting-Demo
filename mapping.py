@@ -58,12 +58,12 @@ def point_distance(a, b):
 
 # simplest version mappings
 def push_up_mapping(skeleton):
-    if skeleton[1][8][2] >= 0.15:
+    print('Confidence:' + str(skeleton[1][8][2]) + ',' + str(skeleton[1][21][2]) + ',' + str(skeleton[1][24][2]))
+    if skeleton[1][8][2] > 0:
         fulcrum = skeleton[1][8]
-    elif skeleton[1][21][2] >= 0.2 and skeleton[1][24][2] >= 0.2:
+    elif skeleton[1][21][2] > 0 and skeleton[1][24][2] > 0:
         fulcrum = midpoint([skeleton[1][21], skeleton[1][24]])
     else:
-        print([skeleton[0], -1])
         return [skeleton[0], -1]
     h = abs(fulcrum[1] - skeleton[1][1][1])
     k = point_distance(fulcrum, skeleton[1][1])
@@ -107,5 +107,3 @@ def pull_up_mapping(skeleton):
             return [skeleton[0], 1 - p / i / 1.5]
     print('Wrist distance too large.')
     return -1
-
-

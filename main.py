@@ -10,7 +10,7 @@ import waveform
 t = 0.1
 # threshold for judging whether the action is valid
 T = 0.25
-sample = "temp/video/mepushup.mp4"
+sample = "temp/video/ziyipushup.mp4"
 mapper = mapping.push_up_mapping
 
 for save_dir in ["./output_images", "./output_jsons"]:
@@ -46,7 +46,7 @@ def counting(video):
                 if judging.ave_error_judging1d(f, waveform.push_up_poly) <= T:
                     r += 1
                 f = []
-                flag = [False, -1]
+                flag = [False, y[0]]
         elif flag[0] is True:
             f.append([y[0], f[-1][1]])
     print(r)
