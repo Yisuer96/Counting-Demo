@@ -52,14 +52,13 @@ def reformat_skeleton(skeleton):
     return -1
 
 
-# TODO: 返回视频每一帧的skeleton（reformat to [[x,y,c],[x,y,c],...]）的数组，整体格式：[[frame_num,skeleton],[frame_num,skeleton],
-#  [frame_num,skeleton],...]
-def skeleton_extraction(video_path="./openpose/media/"):
+# TODO: 支持通过data_type选择数据的格式为video or image_dir
+def skeleton_extraction(data_type="--image_dir", path="./openpose/media/"):
     # test_path
     r = []
     # Flags
     parser = argparse.ArgumentParser()
-    parser.add_argument("--image_dir", default=video_path,
+    parser.add_argument(data_type, default=path,
                         help="Process an image. Read all standard formats (jpg, png, bmp, etc.).")
 
     args = parser.parse_known_args()
@@ -92,30 +91,34 @@ def skeleton_extraction(video_path="./openpose/media/"):
     opWrapper.start()
 
     # Read frames on directory
-    imagePaths = op.get_images_on_directory(args[0].image_dir)
+    if "image_dir" in args[0]:
+        imagePaths = op.get_images_on_directory(args[0].image_dir)
+        for f_num, imagePath in enumerate(imagePaths):
+            # Process Image
+            datum = op.Datum()
+            imageToProcess = cv2.imread(imagePath)
+            datum.cvInputData = imageToProcess
+            opWrapper.emplaceAndPop([datum])
 
-    for f_num, imagePath in enumerate(imagePaths):
-        # Process Image
-        datum = op.Datum()
-        imageToProcess = cv2.imread(imagePath)
-        datum.cvInputData = imageToProcess
-        opWrapper.emplaceAndPop([datum])
+            # Display Image
+            # print("Body keypoints: \n" + str(datum.poseKeypoints))
+            # cv2.imshow("OpenPose 1.6.0 - Tutorial Python API", datum.cvOutputData)
+            cv2.imwrite(f"./output_images/{f_num}.jpg", datum.cvOutputData)
+            # cv2.waitKey(0)
 
-        # Display Image
-        # print("Body keypoints: \n" + str(datum.poseKeypoints))
-        # cv2.imshow("OpenPose 1.6.0 - Tutorial Python API", datum.cvOutputData)
-        cv2.imwrite(f"./output_images/{f_num}.jpg", datum.cvOutputData)
-        # cv2.waitKey(0)
-
-        # change output format
-        skt = datum.poseKeypoints[0].tolist()
-        r.append([f_num, skt])
-    # print(r)
-    return r
+            # change output format
+            skt = datum.poseKeypoints[0].tolist()
+            r.append([f_num, skt])
+        # print(r)
+        return r
+    # Read a video
+    else:
+        imagePaths = op.get_images_on_directory(args[0].video)
+        return -1
 
 
 # mat_plot poly_fitting
-def simple_fitting(points,degree):
+def simple_fitting(points, degree):
     if len(points) > 0:
         x = []
         y = []
@@ -160,5 +163,3 @@ def parse_gif(gif_path):
         print("image %d: mode %s, size %s" % (index, frame.mode, frame.size))
         frame.save("%s/frame%d.png" % (file_name, index))
         index += 1
-
-

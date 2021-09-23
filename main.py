@@ -10,7 +10,7 @@ import waveform
 t = 0.1
 # threshold for judging whether the action is valid
 T = 0.25
-sample = "temp/2"
+sample = "temp/video/mepushup.mp4"
 mapper = mapping.push_up_mapping
 
 for save_dir in ["./output_images", "./output_jsons"]:
@@ -25,7 +25,7 @@ def counting(video):
     r = 0
     f = []
     flag = [False, -1]
-    skeleton_data = utils.skeleton_extraction(video)
+    skeleton_data = utils.skeleton_extraction("--video", video)
     for item in skeleton_data:
         # TODO:map result including frame number info
         y = mapper(item)
