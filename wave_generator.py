@@ -7,7 +7,7 @@ import utils
 t = 0.1
 # threshold for judging whether the action is valid
 sample = "temp"
-mapper = mapping.push_up_mapping
+mapper = mapping.sit_up_mapping
 
 
 def generate(videos):
@@ -16,7 +16,7 @@ def generate(videos):
             f = []
             p = []
             flag = [False, -1]
-            skeleton_data = utils.skeleton_extraction(videos + "/" + path)
+            skeleton_data = utils.skeleton_extraction('--image_dir', videos + "/" + path, 'none')
             for item in skeleton_data:
                 y = mapper(item)
                 if y[1] is not -1:

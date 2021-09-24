@@ -80,6 +80,18 @@ def push_up_mapping(skeleton):
 
 
 def sit_up_mapping(skeleton):
+    # if one people captured by
+    if len(skeleton[1][0]) == 3 and sit_up_pose(skeleton[1]) is False:
+        return [skeleton[0], -1]
+    elif len(skeleton[1]) == 2:
+        if sit_up_pose(skeleton[1][0]):
+            skeleton = [skeleton[0], skeleton[1][0]]
+        elif sit_up_pose(skeleton[1][1]):
+            skeleton = [skeleton[0], skeleton[1][1]]
+        else:
+            return [skeleton[0], -1]
+    else:
+        return [skeleton[0], -1]
     h = skeleton[1][8][1] - skeleton[1][1][1]
     k = point_distance(skeleton[1][8], skeleton[1][1])
     i = h / k
@@ -107,3 +119,30 @@ def pull_up_mapping(skeleton):
             return [skeleton[0], 1 - p / i / 1.5]
     print('Wrist distance too large.')
     return -1
+
+
+def sit_up_pose(skeleton):
+    if skeleton[8][2] > 0:
+        h = skeleton[8]
+    elif skeleton[9][2] * skeleton[12][2] > 0:
+        h = midpoint([skeleton[9], skeleton[12]])
+    else:
+        return False
+    if skeleton[10][2] * skeleton[13][2] > 0:
+        i = midpoint([skeleton[10], skeleton[13]])
+    else:
+        return False
+    for j in [[skeleton[11], skeleton[14]], [skeleton[21], skeleton[24]], [skeleton[19], skeleton[22]],
+              [skeleton[20], skeleton[23]]]:
+        if j[0][2] * j[1][2] > 0:
+            j = midpoint([j[0], j[1]])
+            break
+        elif j == [skeleton[20], skeleton[23]]:
+            return False
+    if point_distance(h, j) / abs(h[1] - j[1]) < 10:
+        return False
+    if (h[0] - i[0]) * (i[0] - j[0]) < 0:
+        return False
+    if 1 <= abs(h[1] - j[1]) / abs(i[0] - (h[0] + j[0]) / 2) <= 4:
+        return True
+    return False

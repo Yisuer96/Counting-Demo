@@ -53,7 +53,7 @@ def reformat_skeleton(skeleton):
 
 
 # TODO: 支持通过data_type选择数据的格式为video or image_dir
-def skeleton_extraction(data_type="--image_dir", path="./openpose/media/"):
+def skeleton_extraction(data_type="--image_dir", path="./openpose/media/", skeleton_filter="first"):
     # test_path
     r = []
     # Flags
@@ -101,7 +101,7 @@ def skeleton_extraction(data_type="--image_dir", path="./openpose/media/"):
         datum = op.Datum()
         imageToProcess = cv2.imread(imagePath)
         datum.cvInputData = imageToProcess
-        print('Image '+ imagePath + ' on processing')
+        print('Image ' + imagePath + ' is on processing...')
         opWrapper.emplaceAndPop([datum])
 
         # Display Image
@@ -111,7 +111,11 @@ def skeleton_extraction(data_type="--image_dir", path="./openpose/media/"):
         # cv2.waitKey(0)
 
         # change output format
-        skt = datum.poseKeypoints[0].tolist()
+        if skeleton_filter == "first":
+            skt = datum.poseKeypoints[0].tolist()
+        elif skeleton_filter == "none":
+            skt = datum.poseKeypoints.tolist()
+            print(skt)
         r.append([f_num, skt])
     # print(r)
     return r
@@ -185,4 +189,4 @@ def parse_video(video_path):
             break
 
 
-parse_video("temp/video/mepushup.mp4")
+
