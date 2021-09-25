@@ -4,6 +4,7 @@
 # C = 0.6
 import waveform
 import math
+import math
 
 test_skeleton = [7,
                  [[0, 0, 0], [197.164, 161.491, 0.896455], [237.798, 158.156, 0.840285], [259.772, 124.262, 0.871383],
@@ -15,7 +16,9 @@ test_skeleton = [7,
                   [178.456, 505.561, 0.614999], [181.896, 497.058, 0.770747], [212.357, 514.067, 0.613764],
                   [212.334, 512.348, 0.639208], [203.833, 500.513, 0.782646]]]
 
-
+pull_up_flag = False
+max_angle = 0
+min_angle = 180
 # def test_mapping(skeleton):
 #     error = 0
 #     for (index, item) in enumerate(skeleton):
@@ -29,6 +32,8 @@ test_skeleton = [7,
 #     if point[2] > C:
 #         return True
 #     return False
+
+
 def midpoint(points):
     x = 0
     y = 0
@@ -104,23 +109,36 @@ def sit_up_mapping(skeleton):
 
 
 def pull_up_mapping(skeleton):
+    global pull_up_flag, max_angle, min_angle
+    # print(skeleton)
     i = abs(skeleton[1][4][0] - skeleton[1][7][0])
     # check the distance between two wrist is less than shoulder width
-    if abs(skeleton[1][2][0] - skeleton[1][5][0]) * 1.5 >= i:
+    if abs(skeleton[1][2][0] - skeleton[1][5][0]) * 3 >= i:
         p = skeleton[1][1][1] - midpoint([skeleton[1][4], skeleton[1][7]])[1]
-        if p >= i * 1.5:
+        angle = compute_angle(skeleton[1][3], skeleton[1][2], skeleton[1][3], skeleton[1][4])
+        max_angle = max(max_angle, angle)
+        min_angle = min(min_angle, angle)
+        # print("p: ", p)
+        if angle > 150:
+            pull_up_flag = False
             print('Initial position.')
             return [skeleton[0], 0]
-        elif p <= 0:
-            print('Pulled up.')
-            return [skeleton[0], 1]
+        elif angle <= 50:
+            if pull_up_flag is False:
+                pull_up_flag = True
+                print('Pulled up.')
+                return [skeleton[0], 1]
+            else:
+                return [skeleton[0], 1]
         else:
-            print(1 - p / i / 1.5)
-            return [skeleton[0], 1 - p / i / 1.5]
+            pull_up_flag = False
+            # print(1 - angle / max_angle)
+            return [skeleton[0], 1 - (angle - 50) / 100]
     print('Wrist distance too large.')
     return -1
 
 
+# pull_up_mapping(test_skeleton)
 def sit_up_pose(skeleton):
     if skeleton[8][2] > 0:
         h = skeleton[8]
@@ -146,3 +164,24 @@ def sit_up_pose(skeleton):
     if 1 <= abs(h[1] - j[1]) / abs(i[0] - (h[0] + j[0]) / 2) <= 4:
         return True
     return False
+
+
+def compute_angle(p1, p2, p3, p4):
+    dx1 = p2[0] - p1[0]
+    dy1 = p2[1] - p1[1]
+    dx2 = p4[0] - p3[0]
+    dy2 = p4[1] - p3[1]
+    angle1 = math.atan2(dy1, dx1)
+    angle1 = int(angle1 * 180/math.pi)
+    # print(angle1)
+    angle2 = math.atan2(dy2, dx2)
+    angle2 = int(angle2 * 180/math.pi)
+    # print(angle2)
+    if angle1*angle2 >= 0:
+        included_angle = abs(angle1-angle2)
+    else:
+        included_angle = abs(angle1) + abs(angle2)
+        if included_angle > 180:
+            included_angle = 360 - included_angle
+    return included_angle
+

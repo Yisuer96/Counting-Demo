@@ -9,10 +9,11 @@ def basic_sine(x):
 
 
 def pull_up_sine(x):
-    if x <= 0.6:
-        return (math.cos(-5 * Pi * x / 3) + 1) / 2
-    if x > 0.6:
-        return (math.cos(5 * Pi * (x - 0.6) / 2) + 1) / 2
+    # if x <= 0.6:
+    #     return (math.cos(-5 * Pi * x / 3) + 1) / 2
+    # if x > 0.6:
+    #     return (math.cos(5 * Pi * (x - 0.6) / 2) + 1) / 2
+    return 59.37*x**6 - 202.2*x**5 + 256.2*x**4 - 140.6*x**3 + 23.61*x**2 + 3.681*x - 0.01616
 
 
 def push_up_poly(x):
