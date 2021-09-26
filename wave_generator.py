@@ -31,15 +31,17 @@ def generate(videos):
                         f.append(y)
                     elif flag[0] is True and deviation < t:
                         f.append([y[0], 0])
-                        print(f)
+                        print("Waveform points for this term are:\n" + str(f))
                         p += utils.frame_regularization(f)
+                        print("Total waveform points are:\n" + str(p))
                         f = []
                         flag = [False, y[0]]
                 elif flag[0] is True:
                     f.append([y[0], f[-1][1]])
             if flag[0] is True:
-                print(f)
+                print("Waveform points for this term are:\n" + str(f))
                 p += utils.frame_regularization(f)
+                print("Total waveform points are:\n" + str(p))
     utils.simple_fitting(p, 6)
 
 

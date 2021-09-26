@@ -86,8 +86,12 @@ def push_up_mapping(skeleton):
 
 def sit_up_mapping(skeleton):
     # if one people captured by
-    if len(skeleton[1][0]) == 3 and sit_up_pose(skeleton[1]) is False:
-        return [skeleton[0], -1]
+
+    if len(skeleton[1]) == 1:
+        if sit_up_pose(skeleton[1][0]) is False:
+            return [skeleton[0], -1]
+        else:
+            skeleton = [skeleton[0],skeleton[1][0]]
     elif len(skeleton[1]) == 2:
         if sit_up_pose(skeleton[1][0]):
             skeleton = [skeleton[0], skeleton[1][0]]
