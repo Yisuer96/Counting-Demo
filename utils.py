@@ -115,7 +115,6 @@ def skeleton_extraction(data_type="--image_dir", path="./openpose/media/", skele
             skt = datum.poseKeypoints[0].tolist()
         elif skeleton_filter == "none":
             skt = datum.poseKeypoints.tolist()
-            print(skt)
         r.append([f_num, skt])
     # print(r)
     return r

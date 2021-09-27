@@ -19,6 +19,8 @@ test_skeleton = [7,
 pull_up_flag = False
 max_angle = 0
 min_angle = 180
+
+
 # def test_mapping(skeleton):
 #     error = 0
 #     for (index, item) in enumerate(skeleton):
@@ -85,23 +87,13 @@ def push_up_mapping(skeleton):
 
 
 def sit_up_mapping(skeleton):
-    # if one people captured by
-
-    if len(skeleton[1]) == 1:
-        if sit_up_pose(skeleton[1][0]) is False:
+    for index, skt in enumerate(skeleton[1]):
+        if sit_up_pose(skeleton[0], skt) is True:
+            skeleton = [skeleton[0], skt]
+            break
+        elif index == len(skeleton[1]) - 1:
             return [skeleton[0], -1]
-        else:
-            skeleton = [skeleton[0],skeleton[1][0]]
-    elif len(skeleton[1]) == 2:
-        if sit_up_pose(skeleton[1][0]):
-            skeleton = [skeleton[0], skeleton[1][0]]
-        elif sit_up_pose(skeleton[1][1]):
-            skeleton = [skeleton[0], skeleton[1][1]]
-        else:
-            return [skeleton[0], -1]
-    else:
-        return [skeleton[0], -1]
-    h = skeleton[1][8][1] - skeleton[1][1][1]
+    h = abs(skeleton[1][8][1] - skeleton[1][1][1])
     k = point_distance(skeleton[1][8], skeleton[1][1])
     i = h / k
     if i <= 0:
@@ -143,7 +135,7 @@ def pull_up_mapping(skeleton):
 
 
 # pull_up_mapping(test_skeleton)
-def sit_up_pose(skeleton):
+def sit_up_pose(frame_num, skeleton):
     if skeleton[8][2] > 0:
         h = skeleton[8]
     elif skeleton[9][2] * skeleton[12][2] > 0:
@@ -165,7 +157,7 @@ def sit_up_pose(skeleton):
         return False
     if (h[0] - i[0]) * (i[0] - j[0]) < 0:
         return False
-    if 1 <= abs(h[1] - j[1]) / abs(i[0] - (h[0] + j[0]) / 2) <= 4:
+    if 0.8 <= abs(h[0] - j[0]) / abs(i[0] - (h[1] + j[1]) / 2) <= 4:
         return True
     return False
 
@@ -176,16 +168,15 @@ def compute_angle(p1, p2, p3, p4):
     dx2 = p4[0] - p3[0]
     dy2 = p4[1] - p3[1]
     angle1 = math.atan2(dy1, dx1)
-    angle1 = int(angle1 * 180/math.pi)
+    angle1 = int(angle1 * 180 / math.pi)
     # print(angle1)
     angle2 = math.atan2(dy2, dx2)
-    angle2 = int(angle2 * 180/math.pi)
+    angle2 = int(angle2 * 180 / math.pi)
     # print(angle2)
-    if angle1*angle2 >= 0:
-        included_angle = abs(angle1-angle2)
+    if angle1 * angle2 >= 0:
+        included_angle = abs(angle1 - angle2)
     else:
         included_angle = abs(angle1) + abs(angle2)
         if included_angle > 180:
             included_angle = 360 - included_angle
     return included_angle
-
