@@ -17,16 +17,12 @@ try:
         if platform == "win32":
             # Change these variables to point to the correct folder (Release/x64 etc.)
             sys.path.append(dir_path + '/openpose/Release')
-            # sys.path.append(dir_path + '/../../python/openpose/Release');
-            # os.environ['PATH']  = os.environ['PATH'] + ';' + dir_path + '/../../x64/Release;' +  dir_path + '/../../bin;'
             os.environ['PATH'] = os.environ[
                                      'PATH'] + ';' + dir_path + '/openpose/x64/Release;' + dir_path + '/openpose/bin;'
             import pyopenpose as op
         else:
             # Change these variables to point to the correct folder (Release/x64 etc.)
             sys.path.append('../../python');
-            # If you run `make install` (default path is `/usr/local/python` for Ubuntu), you can also access the OpenPose/python module from there. This will install OpenPose and the python library at your desired installation path. Ensure that this is in your python path in order to use it.
-            # sys.path.append('/usr/local/python')
             from openpose import pyopenpose as op
     except ImportError as e:
         print(
@@ -67,7 +63,7 @@ def skeleton_extraction(data_type="--image_dir", path="./openpose/media/", skele
 
     args = parser.parse_known_args()
 
-    # Custom Params (refer to include/openpose/flags.hpp for more parameters)
+    # Custom Params
     params = dict()
     params["model_folder"] = "./openpose/models/"
 
@@ -85,10 +81,6 @@ def skeleton_extraction(data_type="--image_dir", path="./openpose/media/", skele
             key = curr_item.replace('-', '')
             if key not in params: params[key] = next_item
 
-    # Construct it from system arguments
-    # op.init_argv(args[1])
-    # oppython = op.OpenposePython()
-
     # Starting OpenPose
     opWrapper = op.WrapperPython()
     opWrapper.configure(params)
@@ -104,19 +96,22 @@ def skeleton_extraction(data_type="--image_dir", path="./openpose/media/", skele
         print('Image ' + imagePath + ' is on processing...')
         opWrapper.emplaceAndPop([datum])
 
-        # Display Image
-        # print("Body keypoints: \n" + str(datum.poseKeypoints))
-        # cv2.imshow("OpenPose 1.6.0 - Tutorial Python API", datum.cvOutputData)
+        # Save Image
         cv2.imwrite(f"./output_images/{f_num}.jpg", datum.cvOutputData)
-        # cv2.waitKey(0)
-
         # change output format
+        skt = datum.poseKeypoints[0].tolist()
+        # save result
+        f = open(f"./output_jsons/{f_num}.txt", "w")
+        for point_list in skt:
+            for point in point_list:
+                f.write(str(point) + ' ')
+            f.write("\n")
+        f.close()
         if skeleton_filter == "first":
             skt = datum.poseKeypoints[0].tolist()
         elif skeleton_filter == "none":
             skt = datum.poseKeypoints.tolist()
         r.append([f_num, skt])
-    # print(r)
     return r
 
 
@@ -186,6 +181,3 @@ def parse_video(video_path):
         else:
             print('end')
             break
-
-
-
