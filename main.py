@@ -3,15 +3,17 @@ import judging
 import mapping
 import utils
 import shutil
+from absl import app, flags
 
 # deciding whether the action has begun
 import waveform
 
+action_config = {'push_up': [mapping.push_up_mapping, waveform.push_up_poly],
+                 'pull_up': [mapping.pull_up_mapping, waveform.pull_up_poly],
+                 'sit_up': [mapping.sit_up_mapping, waveform.sit_up_poly]}
 t = 0.1
 # threshold for judging whether the action is valid
 T = 0.25
-sample = "temp/video/ziyipushup.mp4"
-mapper = mapping.push_up_mapping
 
 for save_dir in ["./output_images", "./output_jsons"]:
     if os.path.exists(save_dir):
@@ -20,15 +22,21 @@ for save_dir in ["./output_images", "./output_jsons"]:
     else:
         os.mkdir(save_dir)
 
+FLAGS = flags.FLAGS
+flags.DEFINE_enum("category", "sit_up", ["push_up", "pull_up", "sit_up"], "action category to be counted.")
+flags.DEFINE_string("path", "temp/video/me_sit_up.mp4", "video path to be counted.")
 
-def counting(video):
+
+def counting(argv):
+    path = FLAGS.path
+    config = action_config[FLAGS.category]
     r = 0
     f = []
     flag = [False, -1]
-    skeleton_data = utils.skeleton_extraction("--video", video)
+    skeleton_data = utils.skeleton_extraction("--video", path)
     for item in skeleton_data:
         # TODO:map result including frame number info
-        y = mapper(item)
+        y = config[0](item)
         if y[1] is not -1:
             deviation = abs(y[1])
             if flag[0] is False and deviation < t:
@@ -43,7 +51,7 @@ def counting(video):
                 f.append([y[0], 0])
                 f = utils.frame_regularization(f)
                 # using a simple 1D average error judging
-                if judging.ave_error_judging1d(f, waveform.push_up_poly) <= T:
+                if judging.ave_error_judging1d(f, config[1]) <= T:
                     r += 1
                 f = []
                 flag = [False, y[0]]
@@ -53,4 +61,4 @@ def counting(video):
 
 
 if __name__ == '__main__':
-    counting(sample)
+    app.run(counting)

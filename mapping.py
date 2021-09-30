@@ -144,14 +144,20 @@ def sit_up_pose(frame_num, skeleton):
         return False
     if skeleton[10][2] * skeleton[13][2] > 0:
         i = midpoint([skeleton[10], skeleton[13]])
+    elif skeleton[10][2] > 0:
+        i = skeleton[10]
+    elif skeleton[13][2] > 0:
+        i = skeleton[13]
     else:
         return False
-    for j in [[skeleton[11], skeleton[14]], [skeleton[21], skeleton[24]], [skeleton[19], skeleton[22]],
-              [skeleton[20], skeleton[23]]]:
-        if j[0][2] * j[1][2] > 0:
-            j = midpoint([j[0], j[1]])
+    j = -1
+    for index, t in enumerate(
+            [skeleton[11], skeleton[14], skeleton[21], skeleton[24], skeleton[19], skeleton[22], skeleton[20],
+             skeleton[23]]):
+        if t[2] > 0:
+            j = t
             break
-        elif j == [skeleton[20], skeleton[23]]:
+        elif index == 7:
             return False
     if point_distance(h, j) / abs(h[1] - j[1]) < 10:
         return False
