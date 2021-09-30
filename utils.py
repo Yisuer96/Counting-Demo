@@ -174,6 +174,10 @@ def parse_video(video_path):
     os.makedirs(pic_dir)
     while True:
         res, frame = video_capture.read()
+        shape = frame.shape
+        # resize to a lower 480p frame
+        if shape[0] > 640 and shape[1] > 480:
+            frame = cv2.resize(frame, (640, 480))
         if res:
             if f % 5 == 0:
                 cv2.imwrite(pic_dir + "/" + str('%06d' % f) + '.jpg', frame)

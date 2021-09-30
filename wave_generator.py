@@ -6,7 +6,7 @@ import utils
 # deciding whether the action has begun
 t = 0.1
 # threshold for judging whether the action is valid
-sample = "temp"
+sample = "train"
 mapper = mapping.sit_up_mapping
 
 

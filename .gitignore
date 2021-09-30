@@ -10,11 +10,12 @@ __pycache__/
 .idea
 .Python
 build/
+test/
 develop-eggs/
 dist/
 downloads/
 openpose/
-temp/
+train/
 test_video.mp4
 eggs/
 .eggs/

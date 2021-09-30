@@ -24,7 +24,7 @@ for save_dir in ["./output_images", "./output_jsons"]:
 
 FLAGS = flags.FLAGS
 flags.DEFINE_enum("category", "sit_up", ["push_up", "pull_up", "sit_up"], "action category to be counted.")
-flags.DEFINE_string("path", "temp/video/me_sit_up.mp4", "video path to be counted.")
+flags.DEFINE_string("path", "test/me_sit_up.mp4", "video path to be counted.")
 
 
 def counting(argv):
@@ -57,6 +57,11 @@ def counting(argv):
                 flag = [False, y[0]]
         elif flag[0] is True:
             f.append([y[0], f[-1][1]])
+    if flag[0] is True:
+        f.append([f[-1][0] + 1, 0])
+        f = utils.frame_regularization(f)
+        if judging.ave_error_judging1d(f, config[1]) <= T:
+            r += 1
     print(r)
 
 
