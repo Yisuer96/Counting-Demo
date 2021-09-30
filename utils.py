@@ -93,18 +93,20 @@ def skeleton_extraction(data_type="--image_dir", path="./openpose/media/", skele
         datum = op.Datum()
         imageToProcess = cv2.imread(imagePath)
         datum.cvInputData = imageToProcess
-        print('Image ' + imagePath + ' is on processing...')
+        print('Image ' + imagePath + '\'s skeletons are being extracted...')
         opWrapper.emplaceAndPop([datum])
 
         # Save Image
         cv2.imwrite(f"./output_images/{f_num}.jpg", datum.cvOutputData)
         # change output format
-        skt = datum.poseKeypoints[0].tolist()
+        skt_list = datum.poseKeypoints.tolist()
         # save result
         f = open(f"./output_jsons/{f_num}.txt", "w")
-        for point_list in skt:
-            for point in point_list:
-                f.write(str(point) + ' ')
+        for skt in skt_list:
+            for point_list in skt:
+                for point in point_list:
+                    f.write(str(point) + ' ')
+                f.write("\n")
             f.write("\n")
         f.close()
         if skeleton_filter == "first":
@@ -113,6 +115,30 @@ def skeleton_extraction(data_type="--image_dir", path="./openpose/media/", skele
             skt = datum.poseKeypoints.tolist()
         r.append([f_num, skt])
     return r
+
+
+def load_skeletons():
+    res = []
+    frame = []
+    skt = []
+    for root, dirs, files in os.walk("./output_jsons"):
+        f_sum = len(files)
+        for f in range(f_sum):
+            frame.append(f)
+            temp = []
+            f = open(root + '/' + str(f) + '.txt')
+            for line in f.readlines():
+                cos = line.split(" ")
+                if len(cos) == 4:
+                    skt.append([float(cos[0]), float(cos[1]), float(cos[2])])
+                else:
+                    temp.append(skt)
+                    skt = []
+            frame.append(temp)
+            f.close()
+            res.append(frame)
+            frame = []
+    return res
 
 
 # mat_plot poly_fitting
@@ -163,7 +189,7 @@ def parse_gif(gif_path):
         index += 1
 
 
-def parse_video(video_path):
+def parse_video(video_path, compress=True):
     video_capture = cv2.VideoCapture(video_path)
     f = 0
     file_name = video_path.split(".")[0]
@@ -174,14 +200,18 @@ def parse_video(video_path):
     os.makedirs(pic_dir)
     while True:
         res, frame = video_capture.read()
-        shape = frame.shape
-        # resize to a lower 480p frame
-        if shape[0] > 640 and shape[1] > 480:
-            frame = cv2.resize(frame, (640, 480))
         if res:
+            # sampling every 5 frames
             if f % 5 == 0:
-                cv2.imwrite(pic_dir + "/" + str('%06d' % f) + '.jpg', frame)
+                # resize to a lower 480p frame
+                if compress:
+                    s = frame.shape
+                    if s[0] > 640 and s[1] > 480:
+                        frame = cv2.resize(frame, (640, 480))
+                path = pic_dir + '/' + str('%06d' % f) + '.jpg'
+                cv2.imwrite(path, frame)
             f = f + 1
         else:
+            video_capture.release()
             print('end')
             break

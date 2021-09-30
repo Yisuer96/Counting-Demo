@@ -21,4 +21,9 @@ def push_up_poly(x):
 def sit_up_poly(x):
     if x == 1:
         return 0
-    return x ** 6 * 30.92 + x ** 5 * -93.73 + x ** 4 * 101.9 + x ** 3 * -46.55 + x ** 2 * 4.106 + x * 1.119 + 0.0331
+    r = x ** 6 * 19.89 + x ** 5 * -58.89 + x ** 4 * 60.19 + x ** 3 * -23.22 + x ** 2 * -2.529 + x * 4.513 + 0.06828
+    return r
+
+
+def test_wave(x):
+    return -5 * x * (x - 1)
