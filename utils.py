@@ -8,6 +8,8 @@ import cv2
 import os
 from sys import platform
 import argparse
+from logger import Logger
+import time
 
 try:
     # Import Openpose (Windows/Ubuntu/OSX)
@@ -51,6 +53,8 @@ def reformat_skeleton(skeleton):
 # TODO: 支持通过data_type选择数据的格式为video or image_dir
 def skeleton_extraction(data_type="--image_dir", path="./openpose/media/", skeleton_filter="first"):
     # test_path
+    dt = time.strftime("%Y_%m_%d_%H_%M", time.localtime())
+    log = Logger(dt + '_extract.log', level='debug')
     r = []
     # Flags
     parser = argparse.ArgumentParser()
@@ -93,9 +97,12 @@ def skeleton_extraction(data_type="--image_dir", path="./openpose/media/", skele
         datum = op.Datum()
         imageToProcess = cv2.imread(imagePath)
         datum.cvInputData = imageToProcess
-        print('Image ' + imagePath + '\'s skeletons are being extracted...')
+        log.logger.info(imagePath + ' is being extracted...')
+        tick = time.time()
         opWrapper.emplaceAndPop([datum])
 
+        tick = (time.time() - tick) * 1000
+        log.logger.info(imagePath + ' has been extracted,took ' + str(tick) + 'ms.')
         # Save Image
         cv2.imwrite(f"./output_images/{f_num}.jpg", datum.cvOutputData)
         # change output format
@@ -213,5 +220,4 @@ def parse_video(video_path, compress=True):
             f = f + 1
         else:
             video_capture.release()
-            print('end')
             break
