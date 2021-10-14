@@ -36,19 +36,19 @@ def counting(argv):
     f = []
     flag = [False, -1]
     # DEBUG: Use cached skeleton data
-    # skeleton_data = utils.load_skeletons()
+    skeleton_data = utils.load_skeletons()
     # DEBUG: To extract new skeletons
-    for save_dir in ["./output_images", "./output_jsons"]:
-        if os.path.exists(save_dir):
-            shutil.rmtree(save_dir)
-            os.mkdir(save_dir)
-        else:
-            os.mkdir(save_dir)
-    tick = time.time()
-    log.logger.info('Start skeleton extraction.')
-    skeleton_data = utils.skeleton_extraction("--video", path, skt_filter)
-    tick = (time.time() - tick) * 1000
-    log.logger.info('Skeleton fetched, spent ' + str(tick) + 'ms.')
+    # for save_dir in ["./output_images", "./output_jsons"]:
+    #     if os.path.exists(save_dir):
+    #         shutil.rmtree(save_dir)
+    #         os.mkdir(save_dir)
+    #     else:
+    #         os.mkdir(save_dir)
+    # tick = time.time()
+    # log.logger.info('Start skeleton extraction.')
+    # skeleton_data = utils.skeleton_extraction("--video", path, skt_filter)
+    # tick = (time.time() - tick) * 1000
+    # log.logger.info('Skeleton fetched, spent ' + str(tick) + 'ms.')
 
     tick = time.time()
     log.logger.info('Counting start.')
@@ -74,9 +74,11 @@ def counting(argv):
                 e = judging.ave_error_judging1d(f, waveform_function)
                 if e <= T:
                     r += 1
-                    log.logger.debug('Action ' + str(r) + 'is valid, count+1.\nProcess set: ' + str(f))
-                log.logger.debug(
-                    'Action ' + str(r + 1) + 'is invalid with error = ' + str(e) + '.\nProcess set: ' + str(f))
+                    log.logger.debug(
+                        'Action ' + str(r) + ' is valid with error:' + str(e) + ', count+1.\nProcess set: ' + str(f))
+                else:
+                    log.logger.debug(
+                        'Action ' + str(r + 1) + ' is invalid with error = ' + str(e) + '.\nProcess set: ' + str(f))
                 f = []
                 flag = [False, y[0]]
         elif flag[0] is True:

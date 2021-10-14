@@ -93,14 +93,14 @@ def sit_up_mapping(skeleton):
             break
         elif index == len(skeleton[1]) - 1:
             return [skeleton[0], -1]
-    if skeleton[1][1][1]==0:
+    if skeleton[1][1][1] == 0:
         return [skeleton[0], -1]
     h = abs(skeleton[1][8][1] - skeleton[1][1][1])
     k = point_distance(skeleton[1][8], skeleton[1][1])
     i = h / k
     if i <= 0:
         return [skeleton[0], 0]
-    elif i >= 0.9:
+    elif i >= 0.95:
         return [skeleton[0], 1]
     else:
         return [skeleton[0], i]
@@ -144,27 +144,27 @@ def sit_up_pose(frame_num, skeleton):
         h = midpoint([skeleton[9], skeleton[12]])
     else:
         return False
-    if skeleton[10][2] * skeleton[13][2] > 0:
-        i = midpoint([skeleton[10], skeleton[13]])
-    elif skeleton[10][2] > 0:
+    left = skeleton[13][2] * skeleton[14][2]
+    right = skeleton[10][2] * skeleton[11][2]
+    if left * right > 0:
+        if left > right:
+            i = skeleton[10]
+            j = skeleton[11]
+        else:
+            i = skeleton[13]
+            j = skeleton[14]
+    elif right > 0:
         i = skeleton[10]
-    elif skeleton[13][2] > 0:
+        j = skeleton[11]
+    elif left > 0:
         i = skeleton[13]
+        j = skeleton[14]
     else:
         return False
-    j = -1
-    for index, t in enumerate(
-            [skeleton[11], skeleton[14], skeleton[21], skeleton[24], skeleton[19], skeleton[22], skeleton[20],
-             skeleton[23]]):
-        if t[2] > 0:
-            j = t
-            break
-        elif index == 7:
-            return False
     heel_hip = point_distance(h, j) / abs(h[1] - j[1])
     same_direct = (h[0] - i[0]) * (i[0] - j[0])
     knee_angle = abs(h[0] - j[0]) / abs(i[0] - (h[1] + j[1]) / 2)
-    if heel_hip < 5:
+    if heel_hip < 3:
         return False
     if same_direct < 0:
         return False
