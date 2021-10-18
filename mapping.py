@@ -65,10 +65,11 @@ def point_distance(a, b):
 
 # simplest version mappings
 def push_up_mapping(skeleton):
+    skeleton[1] = skeleton[1][0]
     print('Confidence:' + str(skeleton[1][8][2]) + ',' + str(skeleton[1][21][2]) + ',' + str(skeleton[1][24][2]))
     if skeleton[1][8][2] > 0:
         fulcrum = skeleton[1][8]
-    elif skeleton[1][21][2] > 0 and skeleton[1][24][2] > 0:
+    elif skeleton[1][21][2] * skeleton[1][24][2] > 0:
         fulcrum = midpoint([skeleton[1][21], skeleton[1][24]])
     else:
         return [skeleton[0], -1]

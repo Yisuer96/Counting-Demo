@@ -8,14 +8,14 @@ import waveform
 from logger import Logger
 import time
 
-action_config = {'push_up': [mapping.push_up_mapping, waveform.push_up_poly, "first"],
-                 'pull_up': [mapping.pull_up_mapping, waveform.pull_up_poly, "first"],
-                 'sit_up': [mapping.sit_up_mapping, waveform.test_wave, "none"]}
+action_config = {'push_up': [mapping.push_up_mapping, waveform.push_up_poly],
+                 'pull_up': [mapping.pull_up_mapping, waveform.pull_up_poly],
+                 'sit_up': [mapping.sit_up_mapping, waveform.sit_up_poly]}
 
 # Threshold for detecting whether the action has begun
 t = 0.1
 # threshold for judging whether the action is valid
-T = 0.25
+T = 0.3
 
 FLAGS = flags.FLAGS
 # Choose the action category to be counted
@@ -31,7 +31,6 @@ def counting(argv):
     config = action_config[FLAGS.category]
     mapping_function = config[0]
     waveform_function = config[1]
-    skt_filter = config[2]
     r = 0
     f = []
     flag = [False, -1]
@@ -46,7 +45,7 @@ def counting(argv):
     #         os.mkdir(save_dir)
     # tick = time.time()
     # log.logger.info('Start skeleton extraction.')
-    # skeleton_data = utils.skeleton_extraction("--video", path, skt_filter)
+    # skeleton_data = utils.skeleton_extraction("--video", path)
     # tick = (time.time() - tick) * 1000
     # log.logger.info('Skeleton fetched, spent ' + str(tick) + 'ms.')
 

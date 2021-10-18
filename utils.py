@@ -51,7 +51,7 @@ def reformat_skeleton(skeleton):
 
 
 # TODO: 支持通过data_type选择数据的格式为video or image_dir
-def skeleton_extraction(data_type="--image_dir", path="./openpose/media/", skeleton_filter="first"):
+def skeleton_extraction(data_type="--image_dir", path="./openpose/media/"):
     # test_path
     dt = time.strftime("%Y_%m_%d_%H_%M", time.localtime())
     log = Logger(dt + '_extract.log', level='debug')
@@ -72,18 +72,18 @@ def skeleton_extraction(data_type="--image_dir", path="./openpose/media/", skele
     params["model_folder"] = "./openpose/models/"
 
     # Add others in path?
-    for i in range(0, len(args[1])):
-        curr_item = args[1][i]
-        if i != len(args[1]) - 1:
-            next_item = args[1][i + 1]
-        else:
-            next_item = "1"
-        if "--" in curr_item and "--" in next_item:
-            key = curr_item.replace('-', '')
-            if key not in params:  params[key] = "1"
-        elif "--" in curr_item and "--" not in next_item:
-            key = curr_item.replace('-', '')
-            if key not in params: params[key] = next_item
+    # for i in range(0, len(args[1])):
+    #     curr_item = args[1][i]
+    #     if i != len(args[1]) - 1:
+    #         next_item = args[1][i + 1]
+    #     else:
+    #         next_item = "1"
+    #     if "--" in curr_item and "--" in next_item:
+    #         key = curr_item.replace('-', '')
+    #         if key not in params:  params[key] = "1"
+    #     elif "--" in curr_item and "--" not in next_item:
+    #         key = curr_item.replace('-', '')
+    #         if key not in params: params[key] = next_item
 
     # Starting OpenPose
     opWrapper = op.WrapperPython()
@@ -116,10 +116,7 @@ def skeleton_extraction(data_type="--image_dir", path="./openpose/media/", skele
                 f.write("\n")
             f.write("\n")
         f.close()
-        if skeleton_filter == "first":
-            skt = datum.poseKeypoints[0].tolist()
-        elif skeleton_filter == "none":
-            skt = datum.poseKeypoints.tolist()
+        skt = datum.poseKeypoints.tolist()
         r.append([f_num, skt])
     return r
 
