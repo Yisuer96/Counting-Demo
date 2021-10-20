@@ -13,17 +13,22 @@ def pull_up_poly(x):
 
 
 def push_up_poly(x):
-    if x == 1:
+    if x == 1 or x == 0:
         return 0
-    return x ** 6 * -61.66 + x ** 5 * 201.1 + x ** 4 * -243.1 + x ** 3 * 130.2 + x ** 2 * -30.71 + x * 4.069
+    return x ** 6 * -160.2 + x ** 5 * 488.3 + x ** 4 * -553.4 + x ** 3 * 283 + x ** 2 * -64.73 + x * 7.051 + 0.01927
 
 
 def sit_up_poly(x):
-    if x == 1:
+    if x == 1 or x == 0:
         return 0
-    r = x ** 6 * 19.89 + x ** 5 * -58.89 + x ** 4 * 60.19 + x ** 3 * -23.22 + x ** 2 * -2.529 + x * 4.513 + 0.06828
+    r = x ** 6 * 9.664 + x ** 5 * -29.19 + x ** 4 * 28.05 + x ** 3 * -7.352 + x ** 2 * -5.963 + x * 4.738 + 0.06725
     return r
 
 
-def test_wave(x):
-    return -5 * x * (x - 1)
+def test():
+    for i in range(21):
+        j = i / 20
+        print(str([j, push_up_poly(j)]))
+
+
+test()

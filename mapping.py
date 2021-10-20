@@ -65,31 +65,34 @@ def point_distance(a, b):
 
 # simplest version mappings
 def push_up_mapping(skeleton):
-    skeleton[1] = skeleton[1][0]
-    print('Confidence:' + str(skeleton[1][8][2]) + ',' + str(skeleton[1][21][2]) + ',' + str(skeleton[1][24][2]))
-    if skeleton[1][8][2] > 0:
-        fulcrum = skeleton[1][8]
-    elif skeleton[1][21][2] * skeleton[1][24][2] > 0:
-        fulcrum = midpoint([skeleton[1][21], skeleton[1][24]])
+    for index, skt in enumerate(skeleton[1]):
+        if push_up_pose(skeleton[0], skt) is True:
+            skeleton = [skeleton[0], skt]
+            break
+        elif index == len(skeleton[1]) - 1:
+            return [skeleton[0], -1]
+    if skeleton[1][11][2] * skeleton[1][14][2] > 0 and \
+            point_distance(skeleton[1][11], skeleton[1][14]) * 4 < point_distance(skeleton[1][1], skeleton[1][8]):
+        fulcrum = midpoint([skeleton[1][11], skeleton[1][14]])
     else:
-        return [skeleton[0], -1]
+        fulcrum = skeleton[1][11] if skeleton[1][11][2] > skeleton[1][14][2] else skeleton[1][14]
     h = abs(fulcrum[1] - skeleton[1][1][1])
     k = point_distance(fulcrum, skeleton[1][1])
     i = h / k
-    if i >= 0.25:
+    if i >= 0.35:
         print([skeleton[0], 0])
         return [skeleton[0], 0]
     elif i <= 0.05:
         print([skeleton[0], 1])
         return [skeleton[0], 1]
     else:
-        print([skeleton[0], 1 - i / 0.25])
-        return [skeleton[0], 1 - i / 0.25]
+        print([skeleton[0], 1 - i / 0.35])
+        return [skeleton[0], 1 - i / 0.35]
 
 
 def sit_up_mapping(skeleton):
     for index, skt in enumerate(skeleton[1]):
-        if sit_up_pose(skeleton[0], skt) is True:
+        if sit_up_pose(skt) is True:
             skeleton = [skeleton[0], skt]
             break
         elif index == len(skeleton[1]) - 1:
@@ -138,7 +141,7 @@ def pull_up_mapping(skeleton):
 
 
 # pull_up_mapping(test_skeleton)
-def sit_up_pose(frame_num, skeleton):
+def sit_up_pose(skeleton):
     if skeleton[8][2] > 0:
         h = skeleton[8]
     elif skeleton[9][2] * skeleton[12][2] > 0:
@@ -171,6 +174,23 @@ def sit_up_pose(frame_num, skeleton):
         return False
     if 0.5 <= knee_angle <= 4:
         return True
+    return False
+
+
+def push_up_pose(f, skeleton):
+    if skeleton[1][2] == 0:
+        return False
+    elif skeleton[8][2] * (skeleton[11][2] + skeleton[14][2]) > 0:
+        h = skeleton[1]
+        j = skeleton[8]
+        k = []
+        for i in [skeleton[11], skeleton[14]]:
+            if i[2] > 0:
+                k.append(i)
+        k = midpoint(k)
+        if 160 < compute_angle(h, j, k, j) <= 180:
+            return True
+        return False
     return False
 
 

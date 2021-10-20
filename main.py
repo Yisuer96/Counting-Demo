@@ -35,19 +35,19 @@ def counting(argv):
     f = []
     flag = [False, -1]
     # DEBUG: Use cached skeleton data
-    skeleton_data = utils.load_skeletons()
+    # skeleton_data = utils.load_skeletons()
     # DEBUG: To extract new skeletons
-    # for save_dir in ["./output_images", "./output_jsons"]:
-    #     if os.path.exists(save_dir):
-    #         shutil.rmtree(save_dir)
-    #         os.mkdir(save_dir)
-    #     else:
-    #         os.mkdir(save_dir)
-    # tick = time.time()
-    # log.logger.info('Start skeleton extraction.')
-    # skeleton_data = utils.skeleton_extraction("--video", path)
-    # tick = (time.time() - tick) * 1000
-    # log.logger.info('Skeleton fetched, spent ' + str(tick) + 'ms.')
+    for save_dir in ["./output_images", "./output_jsons"]:
+        if os.path.exists(save_dir):
+            shutil.rmtree(save_dir)
+            os.mkdir(save_dir)
+        else:
+            os.mkdir(save_dir)
+    tick = time.time()
+    log.logger.info('Start skeleton extraction.')
+    skeleton_data = utils.skeleton_extraction("--video", path)
+    tick = (time.time() - tick) * 1000
+    log.logger.info('Skeleton fetched, spent ' + str(tick) + 'ms.')
 
     tick = time.time()
     log.logger.info('Counting start.')

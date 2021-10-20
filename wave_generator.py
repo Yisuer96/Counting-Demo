@@ -2,21 +2,28 @@ import os
 
 import mapping
 import utils
+import shutil
 
 # deciding whether the action has begun
 t = 0.1
 # threshold for judging whether the action is valid
 sample = "train"
-mapper = mapping.sit_up_mapping
+mapper = mapping.push_up_mapping
 
 
 def generate(videos):
     p = []
     for dir_path, dir_names, file_names in os.walk(videos):
         for path in dir_names:
+            for save_dir in ["./output_images", "./output_jsons"]:
+                if os.path.exists(save_dir):
+                    shutil.rmtree(save_dir)
+                    os.mkdir(save_dir)
+                else:
+                    os.mkdir(save_dir)
             f = []
             flag = [False, -1]
-            skeleton_data = utils.skeleton_extraction('--image_dir', videos + "/" + path, 'none')
+            skeleton_data = utils.skeleton_extraction('--image_dir', videos + "/" + path)
             for item in skeleton_data:
                 y = mapper(item)
                 if y[1] is not -1:
@@ -38,7 +45,7 @@ def generate(videos):
                         f = []
                         flag = [False, y[0]]
                 elif flag[0] is True:
-                    print("Lost frame " + str(y[0]) + "follows last frame")
+                    print("Lost frame " + str(y[0]) + " follows last frame")
                     f.append([y[0], f[-1][1]])
             if flag[0] is True:
                 f.append([f[-1][0] + 1, 0])
