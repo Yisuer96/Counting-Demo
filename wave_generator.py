@@ -52,7 +52,7 @@ def generate(videos):
                 print("Waveform points for this term are:\n" + str(f))
                 p += utils.frame_regularization(f)
                 print("Total waveform points are:\n" + str(p))
-    utils.simple_fitting(p, 6)
+    utils.trapezoidal_fitting(p, 6)
 
 
 if __name__ == '__main__':

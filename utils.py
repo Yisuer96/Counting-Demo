@@ -150,7 +150,7 @@ def simple_fitting(points, degree):
     if len(points) > 0:
         x = []
         y = []
-        for (index, item) in enumerate(points):
+        for index, item in enumerate(points):
             x.append(item[0])
             y.append(item[1])
         x = np.array(x)
@@ -167,6 +167,57 @@ def simple_fitting(points, degree):
         plt.ylabel('y')
         plt.legend(loc=4)  # 指定legend的位置右下角
         plt.title('poly_fitting')
+        plt.show()
+
+
+def trapezoidal_fitting(points, degree):
+    if len(points) > 0:
+        x1 = []
+        y1 = []
+        x2 = []
+        y2 = []
+        flag = 0
+        for index, item in enumerate(points):
+            if item[1] < 1 and flag == 0:
+                x1.append(item[0])
+                y1.append(item[1])
+            elif item[1] == 1 and flag == 0:
+                print("Inflection 1: " + str(item[0]) + ".")
+                x1.append(item[0])
+                y1.append(item[1])
+                flag = 1
+            elif item[1] == 1 and flag == 1:
+                if points[index + 1][1] != 1:
+                    print("Inflection 1: " + str(item[0]) + ".")
+                    x2.append(item[0])
+                    y2.append(item[1])
+                    flag = 2
+            else:
+                x2.append(item[0])
+                y2.append(item[1])
+        if len(x2) == 0:
+            simple_fitting(points, degree)
+            return
+        x1 = np.array(x1)
+        y1 = np.array(y1)
+        x2 = np.array(x2)
+        y2 = np.array(y2)
+        f1 = np.polyfit(x1, y1, degree)
+        f2 = np.polyfit(x2, y2, degree)
+        p1 = np.poly1d(f1)
+        p2 = np.poly1d(f2)
+        print('p1 is :\n', p1)
+        print('p2 is :\n', p2)
+        y_val1 = p1(x1)
+        y_val2 = p2(x2)
+        plot1 = plt.plot(x1, y1, 's', label='original values 1')
+        plot2 = plt.plot(x1, y_val1, 'r', label='poly_fit values 1')
+        plot3 = plt.plot(x2, y2, 's', label='original values 2')
+        plot4 = plt.plot(x2, y_val2, 'r', label='poly_fit values 2')
+        plt.xlabel('x')
+        plt.ylabel('y')
+        plt.legend(loc=4)  # 指定legend的位置右下角
+        plt.title('trapezoidal_fitting')
         plt.show()
 
 
@@ -218,3 +269,22 @@ def parse_video(video_path, compress=True):
         else:
             video_capture.release()
             break
+
+
+trapezoidal_fitting([[0.0, 0], [0.027777777777777776, 0.22865113226106148], [0.05555555555555555, 0.2462913107639152],
+                     [0.08333333333333333, 0.2639415078646734], [0.1111111111111111, 0.2817156195140196],
+                     [0.1388888888888889, 0.3228756567128276], [0.16666666666666666, 0.3332867102434083],
+                     [0.19444444444444445, 0.38201334472837767], [0.2222222222222222, 0.41259080173385776],
+                     [0.25, 0.46758996252914553], [0.2777777777777778, 0.5138624018182933],
+                     [0.3055555555555556, 0.562204282238249], [0.3333333333333333, 0.6105465580762421],
+                     [0.3611111111111111, 0.6539667015376911], [0.3888888888888889, 0.7206647864457756],
+                     [0.4166666666666667, 0.7419042402572067], [0.4444444444444444, 0.8041099869346701],
+                     [0.4722222222222222, 0.8331573576161039], [0.5, 1], [0.5277777777777778, 1],
+                     [0.5555555555555556, 1], [0.5833333333333334, 0.816665854973857],
+                     [0.6111111111111112, 0.7915669336971238], [0.6388888888888888, 0.7456495720855176],
+                     [0.6666666666666666, 0.703490844793719], [0.6944444444444444, 0.655269703394147],
+                     [0.7222222222222222, 0.6184718496736847], [0.75, 0.5778881016702412],
+                     [0.7777777777777778, 0.5233619406275448], [0.8055555555555556, 0.46766894268866177],
+                     [0.8333333333333334, 0.4108778421413818], [0.8611111111111112, 0.38809019044852244],
+                     [0.8888888888888888, 0.333170687368359], [0.9166666666666666, 0.322760514375086],
+                     [0.9444444444444444, 0.2873543139493414], [0.9722222222222222, 0.2611814040809157], [1.0, 0]], 6)

@@ -25,10 +25,21 @@ def sit_up_poly(x):
     return r
 
 
+def push_up_trapezoidal(x):
+    if x == 0 or x == 1:
+        return 0
+    elif 0.5 <= x <= 5 / 9:
+        return 1
+    elif 0 < x < 0.5:
+        return x ** 6 * -892.6 + x ** 5 * 1973 + x ** 4 * -1580 + x ** 3 * 585.5 + x ** 2 * -101.6 + x * 8.453 + 0.01701
+    else:
+        return x ** 6 * -2595.86 + x ** 5 * 10783.28 + x ** 4 * -18231.43 + x ** 3 * 15981.01 + x ** 2 * -7603.91 + x * 1838.06 + -171.127
+
+
 def test():
     for i in range(21):
         j = i / 20
-        print(str([j, push_up_poly(j)]))
+        print(str([j, push_up_trapezoidal(j)]))
 
 
 test()
