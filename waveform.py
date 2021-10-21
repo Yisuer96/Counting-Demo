@@ -36,10 +36,21 @@ def push_up_trapezoidal(x):
         return x ** 6 * -2595.86 + x ** 5 * 10783.28 + x ** 4 * -18231.43 + x ** 3 * 15981.01 + x ** 2 * -7603.91 + x * 1838.06 + -171.127
 
 
-def test():
-    for i in range(21):
-        j = i / 20
-        print(str([j, push_up_trapezoidal(j)]))
+def sit_up_trapezoidal(x):
+    if x == 0 or x == 1:
+        return 0
+    elif 0.304348 <= x <= 0.617647:
+        return 1
+    elif 0 < x < 0.304348:
+        return x ** 6 * -71303.5 + x ** 5 * 72999.67 + x ** 4 * -28683.69 + x ** 3 * 5391.68 + x ** 2 * -492.011 + x * 21.9812 + -0.011
+    else:
+        return x ** 6 * -4665.52 + x ** 5 * 22197.315 + x ** 4 * -43730.55 + x ** 3 * 45662.286 + x ** 2 * -26659.22 + x * 8253.5 + -1057.787
 
 
-test()
+# def test():
+#     for i in range(21):
+#         j = i / 20
+#         print(str([j, sit_up_trapezoidal(j)]))
+#
+#
+# test()

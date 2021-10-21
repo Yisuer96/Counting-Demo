@@ -8,7 +8,7 @@ import shutil
 t = 0.1
 # threshold for judging whether the action is valid
 sample = "train"
-mapper = mapping.push_up_mapping
+mapper = mapping.sit_up_mapping
 
 
 def generate(videos):
@@ -40,7 +40,7 @@ def generate(videos):
                     elif flag[0] is True and deviation < t:
                         f.append([y[0], 0])
                         print("Waveform points for this term are:\n" + str(f))
-                        p += utils.frame_regularization(f)
+                        p = utils.insert_points(p, utils.frame_regularization(f))
                         print("Total waveform points are:\n" + str(p))
                         f = []
                         flag = [False, y[0]]
@@ -50,7 +50,7 @@ def generate(videos):
             if flag[0] is True:
                 f.append([f[-1][0] + 1, 0])
                 print("Waveform points for this term are:\n" + str(f))
-                p += utils.frame_regularization(f)
+                p = utils.insert_points(p, utils.frame_regularization(f))
                 print("Total waveform points are:\n" + str(p))
     utils.trapezoidal_fitting(p, 6)
 
