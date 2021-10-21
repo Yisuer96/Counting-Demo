@@ -50,8 +50,7 @@ def reformat_skeleton(skeleton):
     return -1
 
 
-# TODO: 支持通过data_type选择数据的格式为video or image_dir
-def skeleton_extraction(data_type="--image_dir", path="./openpose/media/"):
+def skeleton_extraction(data_type="--image_dir", path="./openpose/media/", task=0):
     # test_path
     dt = time.strftime("%Y_%m_%d_%H_%M", time.localtime())
     log = Logger(dt + '_extract.log', level='debug')
@@ -103,12 +102,13 @@ def skeleton_extraction(data_type="--image_dir", path="./openpose/media/"):
 
         tick = (time.time() - tick) * 1000
         log.logger.info(imagePath + ' has been extracted,took ' + str(tick) + 'ms.')
+        save_prefix = "./count_cache/" if task == 1 else "./generate_cache/"
         # Save Image
-        cv2.imwrite(f"./output_images/{f_num}.jpg", datum.cvOutputData)
+        cv2.imwrite(save_prefix + f"output_images/{f_num}.jpg", datum.cvOutputData)
         # change output format
         skt_list = datum.poseKeypoints.tolist()
         # save result
-        f = open(f"./output_jsons/{f_num}.txt", "w")
+        f = open(save_prefix + f"output_jsons/{f_num}.txt", "w")
         for skt in skt_list:
             for point_list in skt:
                 for point in point_list:
@@ -121,11 +121,12 @@ def skeleton_extraction(data_type="--image_dir", path="./openpose/media/"):
     return r
 
 
-def load_skeletons():
+def load_skeletons(task):
     res = []
     frame = []
     skt = []
-    for root, dirs, files in os.walk("./output_jsons"):
+    save_prefix = "./count_cache/" if task == 1 else "./generate_cache/"
+    for root, dirs, files in os.walk(save_prefix + "output_jsons"):
         f_sum = len(files)
         for f in range(f_sum):
             frame.append(f)
@@ -286,4 +287,3 @@ def insert_points(origin, new):
     for i in range(fn, len(new)):
         res.append(new[i])
     return res
-

@@ -15,12 +15,12 @@ def generate(videos):
     p = []
     for dir_path, dir_names, file_names in os.walk(videos):
         for path in dir_names:
-            for save_dir in ["./output_images", "./output_jsons"]:
+            for save_dir in ["./generate_cache/output_images", "./generate_cache/output_jsons"]:
                 if os.path.exists(save_dir):
                     shutil.rmtree(save_dir)
-                    os.mkdir(save_dir)
+                    os.makedirs(save_dir)
                 else:
-                    os.mkdir(save_dir)
+                    os.makedirs(save_dir)
             f = []
             flag = [False, -1]
             skeleton_data = utils.skeleton_extraction('--image_dir', videos + "/" + path)
