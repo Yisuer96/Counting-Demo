@@ -113,11 +113,11 @@ def sit_up_mapping(skeleton):
 def pull_up_mapping(skeleton):
     global pull_up_flag, max_angle, min_angle
     # print(skeleton)
-    i = abs(skeleton[1][4][0] - skeleton[1][7][0])
+    i = abs(skeleton[1][0][4][0] - skeleton[1][0][7][0])
     # check the distance between two wrist is less than shoulder width
-    if abs(skeleton[1][2][0] - skeleton[1][5][0]) * 3 >= i:
-        p = skeleton[1][1][1] - midpoint([skeleton[1][4], skeleton[1][7]])[1]
-        angle = compute_angle(skeleton[1][3], skeleton[1][2], skeleton[1][3], skeleton[1][4])
+    if abs(skeleton[1][0][2][0] - skeleton[1][0][5][0]) * 3 >= i:
+        p = skeleton[1][0][1][1] - midpoint([skeleton[1][0][4], skeleton[1][0][7]])[1]
+        angle = compute_angle(skeleton[1][0][3], skeleton[1][0][2], skeleton[1][0][3], skeleton[1][0][4])
         max_angle = max(max_angle, angle)
         min_angle = min(min_angle, angle)
         # print("p: ", p)
@@ -137,7 +137,7 @@ def pull_up_mapping(skeleton):
             # print(1 - angle / max_angle)
             return [skeleton[0], 1 - (angle - 50) / 100]
     print('Wrist distance too large.')
-    return -1
+    return [skeleton[0], -1]
 
 
 # pull_up_mapping(test_skeleton)
