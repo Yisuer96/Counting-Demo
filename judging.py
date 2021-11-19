@@ -1,6 +1,6 @@
 # Judging a test wave is a qualified action or not
 import utils
-import waveform
+import action_dictionary
 
 
 def ave_error_judging1d(sample, template):

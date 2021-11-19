@@ -2,7 +2,7 @@
 
 # Confidence threshold of skeleton point
 # C = 0.6
-import waveform
+import action_dictionary
 import math
 import math
 

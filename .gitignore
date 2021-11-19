@@ -135,5 +135,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-generate_cache/output_images/
-generate_cache/output_jsons/
+generate_cache/
+count_cache/
+logs/

@@ -52,8 +52,10 @@ def reformat_skeleton(skeleton):
 
 def skeleton_extraction(data_type="--image_dir", path="./openpose/media/", task=0):
     # test_path
-    dt = time.strftime("%Y_%m_%d_%H_%M", time.localtime())
-    log = Logger(dt + '_extract.log', level='debug')
+    if os.path.exists('./logs/extract') is False:
+        os.makedirs('./logs/extract')
+    dt = time.strftime("./logs/extract/%Y_%m_%d_%H_%M", time.localtime())
+    log = Logger(dt + '_extract.logs', level='debug')
     r = []
     # Flags
     parser = argparse.ArgumentParser()
@@ -287,3 +289,19 @@ def insert_points(origin, new):
     for i in range(fn, len(new)):
         res.append(new[i])
     return res
+
+
+def pic_avg_diff(img1, img2):
+    img1 = cv2.imread(img1)
+    img2 = cv2.imread(img2)
+    # CV difference function, optimized but slower
+    err = cv2.absdiff(img1, img2)
+    # err = np.maximum(img1 - img2, img2 - img1)
+    diff = np.sum(err)
+    cv2.imshow('err', err)
+    # print(dif f)
+    cv2.waitKey(0)
+    # plt.imshow(err)
+    # plt.show()
+    avg_diff = diff / (err.shape[0] * err.shape[1])
+    return avg_diff

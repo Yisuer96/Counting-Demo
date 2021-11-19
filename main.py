@@ -4,18 +4,20 @@ import mapping
 import utils
 import shutil
 from absl import app, flags
-import waveform
+import action_dictionary
 from logger import Logger
 import time
 
-action_config = {'push_up': [mapping.push_up_mapping, waveform.push_up_poly],
-                 'pull_up': [mapping.pull_up_mapping, waveform.pull_up_poly],
-                 'sit_up': [mapping.sit_up_mapping, waveform.sit_up_poly]}
+action_config = {'push_up': [mapping.push_up_mapping, action_dictionary.push_up_poly],
+                 'pull_up': [mapping.pull_up_mapping, action_dictionary.pull_up_poly],
+                 'sit_up': [mapping.sit_up_mapping, action_dictionary.sit_up_poly]}
 
 # Threshold for detecting whether the action has begun
 t = 0.1
-# threshold for judging whether the action is valid
+# Threshold for judging whether the action is valid
 T = 0.3
+# Threshold for jac
+D = 70
 
 FLAGS = flags.FLAGS
 # Choose the action category to be counted
@@ -25,8 +27,10 @@ flags.DEFINE_string("path", "test/me_sit_up.mp4", "video path to be counted.")
 
 
 def counting(argv):
-    dt = time.strftime("%Y_%m_%d_%H_%M", time.localtime())
-    log = Logger(dt + '_count.log', level='debug')
+    if os.path.exists('./logs/count') is False:
+        os.makedirs('./logs/count')
+    dt = time.strftime("./logs/count/%Y_%m_%d_%H_%M", time.localtime())
+    log = Logger(dt + '_count.logs', level='debug')
     path = FLAGS.path
     config = action_config[FLAGS.category]
     mapping_function = config[0]
@@ -44,10 +48,10 @@ def counting(argv):
     #     else:
     #         os.makedirs(save_dir)
     # tick = time.time()
-    # log.logger.info('Start skeleton extraction.')
+    # logs.logger.info('Start skeleton extraction.')
     # skeleton_data = utils.skeleton_extraction("--video", path, 1)
     # tick = (time.time() - tick) * 1000
-    # log.logger.info('Skeleton fetched, spent ' + str(tick) + 'ms.')
+    # logs.logger.info('Skeleton fetched, spent ' + str(tick) + 'ms.')
 
     tick = time.time()
     log.logger.info('Counting start.')
